@@ -5,12 +5,14 @@ let database = require('./database')
 let validate = require('./validation')
 let authRequired = require('./authRequired')
 
-require('dotenv').config()
-
 let app = express()
 
 app.use(express.json())
 
+require('dotenv').config()
+
+
+// process.env.JWT_SECRET to access the secret in the .env file
 console.log(process.env.JWT_SECRET)
 
 app.get('/', (req, res)=>{
@@ -115,7 +117,7 @@ app.post('/login', (req, res) => {
 						id: checkedUser[0].rowid
 					}
 
-					jwt.sign(user, process.env.JWT_SECRET, {expiresIn: "1hr"}, (err, signedJwt) => {
+					jwt.sign(user, /*process.env.JWT_SECRET*/ 'testing', {expiresIn: "1hr"}, (err, signedJwt) => {
 						if (err){
 							return res.status(500).json({
 								status:500,
