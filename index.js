@@ -22,7 +22,6 @@ app.get('/', (req, res)=>{
 
 // Create a new user (POST)
 app.post('/register', (req, res)=>{
-	console.log(req.body)
 	const {errors, notValid} = validate(req.body)
 
 	if(notValid){
@@ -70,7 +69,6 @@ app.post('/register', (req, res)=>{
 			})
 		})
 	})
-	// const newUserValues = [...Object.values(req.body)]
 })
 
 // Login (POST)
@@ -84,7 +82,6 @@ app.post('/login', (req, res) => {
 
 	const checkUser = `SELECT *, oid FROM user WHERE user.email = ?`
 
-	console.log(req.body)
 	database.all(checkUser, [req.body.email], (err, checkedUser) => {
 		if(err){
 			return res.status(500).json({
@@ -97,12 +94,8 @@ app.post('/login', (req, res) => {
 				message: 'email or password is incorrect'
 			})
 		}else{
-			console.log(checkedUser)
 			bcrypt.compare(req.body.password, checkedUser[0].password, (err, isMatch) => {
 				if(err){
-					console.log(req.body.password)
-					console.log(checkedUser)
-					console.log(err)
 					return res.status(500).json({
 						status: 500,
 						message: 'something went wrong. try again'
@@ -124,7 +117,6 @@ app.post('/login', (req, res) => {
 								message: 'something went wrong. try again'
 							})
 						}
-						console.log(checkedUser[0].rowid)
 						return res.status(200).json({
 							status: 200,
 							message: 'success',
@@ -144,7 +136,6 @@ app.post('/newinfo', authRequired, (req, res) => {
 
 	database.run(insertNewInfo, [req.userId, req.body.name, req.body.age, req.body.hasChildren], (err) => {
 		if(err){
-			console.log(err)
 			return res.status(500).json({
 				status: 500,
 				message: 'something went wrong. try again'
@@ -184,6 +175,29 @@ app.get('/get/:id', authRequired, (req, res) => {
 			})
 		}else{
 			return res.status(200).json(info)
+		}
+	})
+})
+
+// Update info based on user and another condition (UPDATE)
+app.put('/update/:id', authRequired, (req, res) => {
+	const updateOneInfo = `UPDATE info SET user_id = ?, name = ?, age = ?, hasChildren = ? WHERE info.user_id = ${req.userId} AND info.age = ${req.params.id}`
+	database.run(updateOneInfo, [req.userId, req.body.name, req.body.age, req.body.hasChildren], (err) => {
+		if(err){
+			console.log(err)
+			console.log(req.userId)
+			console.log(req.body.name)
+			console.log(req.body.age)
+			console.log(req.body.hasChildren)
+			return res.status(500).json({
+				status: 500,
+				message: 'something went wrong. try again'
+			})
+		}else{
+			return res.status(200).json({
+				status:200,
+				message: 'updated info'
+			})
 		}
 	})
 })
