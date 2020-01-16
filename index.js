@@ -5,9 +5,13 @@ let database = require('./database')
 let validate = require('./validation')
 let authRequired = require('./authRequired')
 
+require('dotenv').config()
+
 let app = express()
 
 app.use(express.json())
+
+console.log(process.env.JWT_SECRET)
 
 app.get('/', (req, res)=>{
 	res.send('hello world')
@@ -111,7 +115,7 @@ app.post('/login', (req, res) => {
 						id: checkedUser[0].rowid
 					}
 
-					jwt.sign(user, 'testing', {expiresIn: "1hr"}, (err, signedJwt) => {
+					jwt.sign(user, process.env.JWT_SECRET, {expiresIn: "1hr"}, (err, signedJwt) => {
 						if (err){
 							return res.status(500).json({
 								status:500,

@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+
+require('dotenv').config()
  
 module.exports = (req, res, next) => {
 	const bearerHeader = req.headers["authorization"]
@@ -11,7 +13,7 @@ module.exports = (req, res, next) => {
 		console.log(bearerToken)
 		// req.token = bearerToken
 
-		let verified = jwt.verify(bearerToken, 'testing')
+		let verified = jwt.verify(bearerToken, process.env.JWT_SECRET)
 		console.log(verified)
 
 		req.userId = verified.id
