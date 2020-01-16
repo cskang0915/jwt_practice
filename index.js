@@ -179,7 +179,7 @@ app.get('/get/:id', authRequired, (req, res) => {
 	})
 })
 
-// Update info based on user and another condition (UPDATE)
+// Update info based on user and another condition (PUT)
 app.put('/update/:id', authRequired, (req, res) => {
 	const updateOneInfo = `UPDATE info SET user_id = ?, name = ?, age = ?, hasChildren = ? WHERE info.user_id = ${req.userId} AND info.age = ${req.params.id}`
 	database.run(updateOneInfo, [req.userId, req.body.name, req.body.age, req.body.hasChildren], (err) => {
